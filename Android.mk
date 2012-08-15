@@ -134,7 +134,7 @@ LOCAL_MODULE_TAGS := eng
 LOCAL_STATIC_LIBRARIES :=
 LOCAL_SHARED_LIBRARIES :=
 
-LOCAL_STATIC_LIBRARIES += libminzip libunz libmincrypt
+LOCAL_STATIC_LIBRARIES += libdedupe libminzip libunz libmincrypt
 LOCAL_STATIC_LIBRARIES += libminuitwrp libpixelflinger_static libpng libjpegtwrp
 LOCAL_SHARED_LIBRARIES += libz libc libstlport libcutils libstdc++
 LOCAL_STATIC_LIBRARIES += libmtdutils
@@ -216,6 +216,7 @@ include $(commands_recovery_local_path)/htc-offmode-charge/Android.mk
 include $(commands_recovery_local_path)/pigz/Android.mk
 include $(commands_recovery_local_path)/cryptsettings/Android.mk
 include $(commands_recovery_local_path)/libcrecovery/Android.mk
+include $(commands_recovery_local_path)/dedupe/Android.mk
 
 commands_recovery_local_path :=
 

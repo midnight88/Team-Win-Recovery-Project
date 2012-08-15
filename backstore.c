@@ -788,7 +788,7 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 			LOGI("Using special tar command for /data/media setups.\n");
 			sprintf(bCommand, "cd /data && tar %s ./ --exclude='media*' -f %s%s", bTarArg, bDir, bImage);
 		} else
-			sprintf(bCommand,"cd %s && tar %s -f %s%s ./*",bMount,bTarArg,bDir,bImage); // form backup command
+			sprintf(bCommand,"dedupe c %s %s%s %s/manifest",bMount,bDir,bImage,bDir); // form backup command
 	} else if (bMnt.backup == image) {
 		strcpy(bMount,bMnt.mnt);
 		bPartSize = bMnt.bsze;
