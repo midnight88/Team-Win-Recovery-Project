@@ -1437,7 +1437,7 @@ int tw_restore(struct dInfo rMnt, const char *rDir)
 				LOGI("Archive is multiple files.\n");
 				multiple_archives = 1;
 			} else
-				sprintf(rCommand, "cd %s && tar -xf %s", rMount, rFilename); // formulate shell command to restore
+				sprintf(rCommand, "dedupe x %s %s",  rMount, rFilename); // formulate shell command to restore
         } else if (rMnt.backup == image) {
             if (strcmp(rFilesystem, "mtd") == 0) { // if filesystem is mtd, we use flash image
     			sprintf(rCommand, "flash_image %s %s", rMnt.mnt, rFilename);
