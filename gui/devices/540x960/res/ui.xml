@@ -1555,7 +1555,7 @@
 				<icon folder="folder_icon" file="file_icon" />
 				<background color="%fileselector_background%" />
 				<font resource="filelist" spacing="%fileselector_spacing%" color="%text_color%" />
-				<filter folders="1" files="0" nav="0" />
+				<filter folders="0" files="1" nav="0" />
 				<path name="tw_backups_folder" />
 				<data name="tw_restore" default="" />
 				<selection name="tw_restore_name" />

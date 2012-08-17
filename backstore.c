@@ -302,8 +302,6 @@ set_restore_files()
 			strcpy(file_path, nan_dir);
 			strcat(file_path, "/");
 			strcat(file_path, str);
-			strcat(file_path, "/");
-			strcat(file_path, );
 			stat(file_path, &st);
 			DataManager_SetStrValue(TW_RESTORE_FILE_DATE, ctime(&st.st_mtime));
 			get_date = 0;
@@ -1345,10 +1343,6 @@ int tw_restore(struct dInfo rMnt, const char *rDir)
     int md5_result;
 
 	strcpy(rFilename,rDir);
-	if (rFilename[strlen(rFilename)-1] != '/')
-	{
-		strcat(rFilename, "/");
-	}
 	strcat(rFilename,rMnt.fnm);
 
 	if (DataManager_GetIntValue(TW_SKIP_MD5_CHECK_VAR)) {
@@ -1682,7 +1676,7 @@ void choose_backup_folder()
     while ((de = readdir(d)) != NULL) {
         int name_len = strlen(de->d_name);
 
-        if (de->d_type == DT_DIR || de->d_type == DT_REG ) {
+        if (de->d_type == DT_DIR) {
             if (name_len == 1 && de->d_name[0] == '.') continue;
             if (name_len == 2 && de->d_name[0] == '.' &&
                 de->d_name[1] == '.') continue;
@@ -1696,6 +1690,7 @@ void choose_backup_folder()
             dirs[d_size][name_len] = '/';
             dirs[d_size][name_len+1] = '\0';
             ++d_size;
+        }
     }
     closedir(d);
 
@@ -1720,7 +1715,7 @@ void choose_backup_folder()
 
         if (chosen_item == 0) {
             break;
-        } else if (item[item_len-1] == '/' || item[8] == "manifest" ) {
+        } else if (item[item_len-1] == '/') {
             char nan_dir[512];
 
             strcpy(nan_dir, tw_dir);
