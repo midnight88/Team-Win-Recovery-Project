@@ -770,7 +770,7 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 		} else {
 			strcpy(bMount,"/");
 			strcat(bMount,bMnt.mnt);
-			sprintf(bImage,"%s.%s.win",bMnt.mnt,bMnt.fst); // anything else that is mountable, will be partition.filesystem.win
+			sprintf(bImage,"%s.%s",bMnt.mnt,bMnt.fst); // anything else that is mountable, will be partition.filesystem.win
             SetDataState("Mounting", bMnt.mnt, 0, 0);
 			if (tw_mount(bMnt))
             {
@@ -789,7 +789,7 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 			LOGI("Using special tar command for /data/media setups.\n");
 			sprintf(bCommand, "cd /data && tar %s ./ --exclude='media*' -f %s%s", bTarArg, bDir, bImage);
 		} else
-			sprintf(bCommand,"dedupe c %s %s%s %s/manifest-%s",bMount,bDir,bImage,bImage,timestamp); // form backup command
+			sprintf(bCommand,"dedupe c %s %s%s %s/manifest-%s-%s",bMount,bDir,bImage,bDir,bMnt.mnt,timestamp); // form backup command
 	} else if (bMnt.backup == image) {
 		strcpy(bMount,bMnt.mnt);
 		bPartSize = bMnt.bsze;
