@@ -296,28 +296,21 @@ set_restore_files()
 			continue;
 
 		if (get_date) {
-			int manifest;
 			char file_path[255];
 			struct stat st;
-			if (strncmp(nan_dir, "/", 1) == 0) {
-				manifest == 0;
-				strcpy(file_path, nan_dir);
-				strcat(file_path, "/");
-				strcat(file_path, str);
-				stat(file_path, &st);
-				DataManager_SetStrValue(TW_RESTORE_FILE_DATE, ctime(&st.st_mtime));
-				get_date = 0;
-			} else {
-				manifest == 1;
-				strcpy(file_path, nan_dir);
-				stat(file_path, &st);
-				DataManager_SetStrValue(TW_RESTORE_FILE_DATE, ctime(&st.st_mtime));
-				get_date = 0;
+
+			strcpy(file_path, nan_dir);
+			strcat(file_path, "/");
+			strcat(file_path, str);
+			strcat(file_path, "/");
+			strcat(file_path, );
+			stat(file_path, &st);
+			DataManager_SetStrValue(TW_RESTORE_FILE_DATE, ctime(&st.st_mtime));
+			get_date = 0;
 		}
 
         label = str;
         ptr = label;
-         
         while (*ptr && *ptr != '.')     ptr++;
         if (*ptr == '.')
         {
