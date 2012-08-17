@@ -130,7 +130,7 @@ endif
 # TODO: Build the ramdisk image in a more principled way.
 
 LOCAL_MODULE_TAGS := eng
-
+LOCAL_EXECUTABLES += utility_dedupe
 LOCAL_STATIC_LIBRARIES :=
 LOCAL_SHARED_LIBRARIES :=
 
@@ -167,7 +167,7 @@ endif
 include $(BUILD_EXECUTABLE)
 
 #added for CM busybox
-#BUSYBOX_LINKS := $(shell cat external/busybox/busybox-minimal.links)
+#BUSYBOX_LINKS += dedupe
 #exclude := tune2fs mke2fs
 #RECOVERY_BUSYBOX_SYMLINKS := $(addprefix $(TARGET_RECOVERY_ROOT_OUT)/sbin/,$(filter-out $(exclude),$(notdir $(BUSYBOX_LINKS))))
 #$(RECOVERY_BUSYBOX_SYMLINKS): BUSYBOX_BINARY := busybox
@@ -190,7 +190,7 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_TAGS := tests
 
 LOCAL_STATIC_LIBRARIES := libmincrypt libcutils libstdc++ libc
-
+LOCAL_STATIC_EXECUTABLE += dedupe
 include $(BUILD_EXECUTABLE)
 
 include $(commands_recovery_local_path)/nonguiimages/Android.mk

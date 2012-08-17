@@ -48,7 +48,7 @@
 #include "data.h"
 #include "ddftw.h"
 #include "backstore.h"
-
+#include "dedupe/dedupe.h"
 int notError;
 
 int gui_init(void);
