@@ -781,6 +781,7 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 				return 1;
 			}
 		}
+		
 		bPartSize = bMnt.bsze;
 		if (bPartSize > MAX_ARCHIVE_SIZE) {
 			breakup_archives = 1;
@@ -788,7 +789,7 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 			LOGI("Using special tar command for /data/media setups.\n");
 			sprintf(bCommand, "cd /data && tar %s ./ --exclude='media*' -f %s%s", bTarArg, bDir, bImage);
 		} else
-			sprintf(bCommand,"dedupe c %s %s%s %s/manifest",bMount,bDir,bImage,bDir); // form backup command
+			sprintf(bCommand,"dedupe c %s %s%s %s/manifest-%s",bMount,bDir,bImage,bImage,timestamp); // form backup command
 	} else if (bMnt.backup == image) {
 		strcpy(bMount,bMnt.mnt);
 		bPartSize = bMnt.bsze;
@@ -1171,7 +1172,7 @@ int nandroid_back_exe()
 	}
 
 	strcpy(backup_loc, DataManager_GetStrValue(TW_BACKUPS_FOLDER_VAR));
-	sprintf(tw_image_dir,"%s/%s/", backup_loc, timestamp); // for backup folder
+	sprintf(tw_image_dir,"%s/", backup_loc); // for backup folder
 	LOGI("Attempt to create folder '%s'\n", tw_image_dir);
     if (recursive_mkdir(tw_image_dir))
     {
@@ -1437,7 +1438,7 @@ int tw_restore(struct dInfo rMnt, const char *rDir)
 				LOGI("Archive is multiple files.\n");
 				multiple_archives = 1;
 			} else
-				sprintf(rCommand, "dedupe x %s %s",  rMount, rFilename); // formulate shell command to restore
+				sprintf(rCommand, "dedupe x %s/manifest- %s %s",  rFilename, rFilename, rMount); // formulate shell command to restore
         } else if (rMnt.backup == image) {
             if (strcmp(rFilesystem, "mtd") == 0) { // if filesystem is mtd, we use flash image
     			sprintf(rCommand, "flash_image %s %s", rMnt.mnt, rFilename);
