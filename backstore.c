@@ -35,7 +35,7 @@
 #include "data.h"
 #include "makelist.h"
 #include "variables.h"
-
+char timestamp[MAX_BACKUP_NAME_LEN];
 int getWordFromString(int word, const char* string, char* buffer, int bufferLen)
 {
     char* start = NULL;
@@ -1147,7 +1147,7 @@ int nandroid_back_exe()
 
     // Create backup folder
     struct tm *t;
-    char timestamp[MAX_BACKUP_NAME_LEN];
+    
 	char tw_image_dir[255];
 	char backup_loc[255];
 	char exe[255];
