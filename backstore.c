@@ -736,20 +736,6 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 	}
     FILE *bFp;
 
-#ifdef RECOVERY_SDCARD_ON_DATA
-    //strcat(bTarArg, " --exclude='data/media*'");
-	/*strcat(bTarArg, " -X /tmp/excludes.lst");
-
-    bFp = fopen("/tmp/excludes.lst", "wt");
-    if (bFp)
-    {
-        fprintf(bFp, "data/media\n");
-        fprintf(bFp, "./media\n");
-        fprintf(bFp, "media\n");
-        fclose(bFp);
-    }*/
-#endif
-
     char str[512];
 	unsigned long long bPartSize;
 	char *bImage = malloc(sizeof(char)*255);
@@ -789,7 +775,7 @@ int tw_backup(struct dInfo bMnt, const char *bDir)
 			LOGI("Using special tar command for /data/media setups.\n");
 			sprintf(bCommand, "cd /data && tar %s ./ --exclude='media*' -f %s%s", bTarArg, bDir, bImage);
 		} else
-			sprintf(bCommand,"dedupe c %s %s%s %s/manifest-%s-%s",bMount,bDir,bImage,bDir,bMnt.mnt,timestamp); // form backup command
+			sprintf(bCommand,"dedupe c %s %s%s %s/manifest-%s-%s-%s",bMount,bDir,bImage,bDir,bMnt.mnt,bMnt.fst,timestamp); // form backup command
 	} else if (bMnt.backup == image) {
 		strcpy(bMount,bMnt.mnt);
 		bPartSize = bMnt.bsze;
@@ -1343,7 +1329,7 @@ int tw_restore(struct dInfo rMnt, const char *rDir)
     int md5_result;
 
 	strcpy(rFilename,rDir);
-	strcat(rFilename,rMnt.fnm);
+	//strcat(rFilename,rMnt.fnm);
 
 	if (DataManager_GetIntValue(TW_SKIP_MD5_CHECK_VAR)) {
 		SetDataState("Verifying MD5", rMnt.mnt, 0, 0);
@@ -1374,15 +1360,23 @@ int tw_restore(struct dInfo rMnt, const char *rDir)
 	if(md5_result == 0)
 	{
 		strcpy(rFilenameW, rFilename);
-		strcat(rFilenameW, "*");
-		sprintf(rCommand,"ls -l %s | awk -F'.' '{ print $2 }'",rFilenameW); // let's get the filesystem type from filename
+		strcat(rFilenameW, "manifest-*");
+		sprintf(rCommand,"ls -l %s | awk -F'-' '{ print $3 }'",rFilenameW); // let's get the filesystem type from filename
         reFp = __popen(rCommand, "r");
 		LOGI("=> Filename is: %s\n",rMnt.fnm);
 		while (fscanf(reFp,"%s",rFilesystem) == 1) { // if we get a match, store filesystem type
 			LOGI("=> Filesystem is: %s\n",rFilesystem); // show it off to the world!
 		}
 		__pclose(reFp);
-
+		char rCommand3[255];
+		sprintf(rCommand3,"ls -l %s | awk -F'-' '{ print $2 }'",rFilenameW); // let's get the filesystem type from filename
+        reFp = __popen(rCommand3, "r");
+		LOGI("=> Filename is: %s\n",rMnt.mnt);
+		while (fscanf(reFp,"%s",rMnt.mnt) == 1) { // if we get a match, store filesystem type
+			LOGI("=> Partition is: %s\n",rMnt.mnt); // show it off to the world!
+		}
+		__pclose(reFp);
+		
 		if (DataManager_GetIntValue(TW_HAS_DATA_MEDIA) == 1 && strcmp(rMnt.mnt,"data") == 0) {
 			wipe_data_without_wiping_media();
 		} else if ((DataManager_GetIntValue(TW_RM_RF_VAR) == 1 && (strcmp(rMnt.mnt,"system") == 0 || strcmp(rMnt.mnt,"data") == 0 || strcmp(rMnt.mnt,"cache") == 0)) || strcmp(rMnt.mnt,".android_secure") == 0) { // we'll use rm -rf instead of formatting for system, data and cache if the option is set, always use rm -rf for android secure
@@ -1434,7 +1428,7 @@ int tw_restore(struct dInfo rMnt, const char *rDir)
 				LOGI("Archive is multiple files.\n");
 				multiple_archives = 1;
 			} else
-				sprintf(rCommand, "dedupe x %s/manifest- %s %s",  rFilename, rFilename, rMount); // formulate shell command to restore
+				sprintf(rCommand, "dedupe x %s %s %s",  rFilenameW, rFilename, rMount); // formulate shell command to restore
         } else if (rMnt.backup == image) {
             if (strcmp(rFilesystem, "mtd") == 0) { // if filesystem is mtd, we use flash image
     			sprintf(rCommand, "flash_image %s %s", rMnt.mnt, rFilename);
