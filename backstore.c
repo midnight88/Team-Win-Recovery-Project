@@ -273,13 +273,15 @@ set_restore_files()
 	int get_date = -1;
 
     DIR* d;
-    d = opendir(nan_dir);
+    sprintf(newdir,"../%s",nan_dir);
+    d = opendir(newdir);
     if (d == NULL)
     {
         LOGE("error opening %s\n", nan_dir);
         return;
     }
-
+    
+    
     struct dirent* de;
     while ((de = readdir(d)) != NULL)
     {
@@ -288,6 +290,7 @@ set_restore_files()
         char* label;
         char* fstype = NULL;
         char* extn = NULL;
+        char* part = NULL;
         char* ptr;
         struct dInfo* dev = NULL;
 
@@ -296,37 +299,40 @@ set_restore_files()
 			continue;
 
 		if (get_date) {
-			char file_path[255];
+			
 			struct stat st;
-
-			strcpy(file_path, nan_dir);
-			strcat(file_path, "/");
-			strcat(file_path, str);
-			stat(file_path, &st);
+			stat(newdir, &st);
 			DataManager_SetStrValue(TW_RESTORE_FILE_DATE, ctime(&st.st_mtime));
 			get_date = 0;
 		}
 
         label = str;
         ptr = label;
-        while (*ptr && *ptr != '.')     ptr++;
-        if (*ptr == '.')
-        {
-            *ptr = 0x00;
-            ptr++;
-            fstype = ptr;
-        }
-        while (*ptr && *ptr != '.')     ptr++;
-        if (*ptr == '.')
+        while (*ptr && *ptr != '-')     ptr++;
+        if (*ptr == '-')
         {
             *ptr = 0x00;
             ptr++;
             extn = ptr;
         }
+        while (*ptr && *ptr != '-')     ptr++;
+        if (*ptr == '-')
+        {
+            *ptr = 0x00;
+            ptr++;
+            part = ptr;
+        }
+        while (*ptr && *ptr != '-')     ptr++;
+        if (*ptr == '-')
+        {
+            *ptr = 0x00;
+            ptr++;
+            fstype = ptr;
+        }
 
-        if (extn == NULL || (strlen(extn) >= 3 && strncmp(extn, "win", 3) != 0))   continue;
+        if (extn == NULL || (strlen(extn) >= 8 && strncmp(extn, "manifest", 8) != 0))   continue;
 
-        dev = findDeviceByLabel(label);
+        dev = findDeviceByLabel(part);
         if (dev == NULL)
         {
             LOGE(" Unable to locate device by label: '%s'\n", label);
