@@ -258,7 +258,7 @@ void
 set_restore_files()
 {
     const char* nan_dir = DataManager_GetStrValue("tw_restore");
-
+	const char* newdir;
     // Start with the default values
     int tw_restore_system = -1;
     int tw_restore_data = -1;
@@ -274,7 +274,9 @@ set_restore_files()
 
     DIR* d;
     sprintf(newdir,"../%s",nan_dir);
+    LOGI("Opening %s",newdir);
     d = opendir(newdir);
+    LOGI("%s opened",newdir);
     if (d == NULL)
     {
         LOGE("error opening %s\n", nan_dir);
@@ -283,6 +285,7 @@ set_restore_files()
     
     
     struct dirent* de;
+   LOGI("Reading %s",newdir);
     while ((de = readdir(d)) != NULL)
     {
         // Strip off three components
@@ -299,15 +302,17 @@ set_restore_files()
 			continue;
 
 		if (get_date) {
-			
+			LOGI("Stating %s",newdir);
 			struct stat st;
 			stat(newdir, &st);
+			LOGI("Stat done");
 			DataManager_SetStrValue(TW_RESTORE_FILE_DATE, ctime(&st.st_mtime));
 			get_date = 0;
 		}
 
         label = str;
         ptr = label;
+	LOGI("Seeking for things in %s",newdir);
         while (*ptr && *ptr != '-')     ptr++;
         if (*ptr == '-')
         {
